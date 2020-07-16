@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
 
-function App() {
+import './App.css';
+import { connect } from 'react-redux';
+import { fetchQuotes } from './actions/quotesAction';
+import Spinner from './Spinner';
+
+
+function App(props) {
+  useEffect(() => {
+    fetchQuotes()
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+   <h1>Actual Facts:</h1>
+  {props.quote && <h3>"{props.quote}"</h3>}
+  {props.error && <p>"{props.error}"</p>}
+  {props.isLoading && <Spinner />}
+<button onClick={props.fetchQuotes}>More Facts</button>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state =>{
+  return{
+      quote: state.quote,
+      isLoading: state.isLoading,
+      error: state.error
+  }
+}
+
+export default connect(
+  mapStateToProps, 
+  {fetchQuotes}
+  )
+  (App);
